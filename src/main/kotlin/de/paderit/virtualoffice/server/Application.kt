@@ -3,7 +3,9 @@ package de.paderit.virtualoffice.server
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
+import io.ktor.http.*
 import io.ktor.locations.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import org.slf4j.event.Level
@@ -27,6 +29,12 @@ fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging){
         level = Level.INFO
+    }
+    install(StatusPages){
+        exception<Throwable>{ e ->
+            call.respondText(e.localizedMessage,
+                ContentType.Text.Plain, HttpStatusCode.InternalServerError)
+        }
     }
     install(Locations)
     install(Authentication) {
