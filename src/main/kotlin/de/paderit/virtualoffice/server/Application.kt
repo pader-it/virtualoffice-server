@@ -22,8 +22,8 @@ fun Application.module() {
             setPrettyPrinting()
         }
     }
-    //install(Authentication) {}
     install(Routing) {
         userManagement(authProvider)
+        defaultapi(authProvider)
     }
 }

@@ -20,7 +20,9 @@ fun Route.userManagement(authProvider: AuthProvider){
             if(principal == null){
                 call.respond(LoginResponse(false, ""))
             } else {
-                call.respond(LoginResponse(true, "stuff"))
+                val token = "keyboardcat"
+                authProvider.addSession(token, principal)
+                call.respond(LoginResponse(true, token))
             }
         }
     }
