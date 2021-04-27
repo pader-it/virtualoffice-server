@@ -16,6 +16,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
     val authProvider: AuthProvider = AuthProvider()
+    val officeManager: OfficeManager = OfficeManager()
 
     install(ContentNegotiation) {
         gson {
@@ -24,6 +25,6 @@ fun Application.module() {
     }
     install(Routing) {
         userManagement(authProvider)
-        defaultapi(authProvider)
+        defaultapi(authProvider, officeManager)
     }
 }
