@@ -5,22 +5,14 @@ import io.ktor.auth.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.sessions.*
 import io.ktor.util.*
 
 @InternalAPI
 fun Route.userManagement(){
-    route("/"){
-        get("/") {
-            call.respondText("Hello World!\n")
+    authenticate("auth-form") {
+        post("/login") {
+            call.respondText("Hello, ${call.principal<UserIdPrincipal>()?.name}!")
         }
     }
-    route("/login"){
-        authenticate("hashAuth") {
-            post {
-                call.application.environment.log.info("Login request")
-                call.respond(HttpStatusCode.OK, "OK")
-            }
-        }
-    }
-
 }
