@@ -5,6 +5,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
+import java.security.MessageDigest
 
 @InternalAPI
 fun Route.userManagement(authProvider: AuthProvider){
@@ -20,7 +21,10 @@ fun Route.userManagement(authProvider: AuthProvider){
             if(principal == null){
                 call.respond(LoginResponse(false, ""))
             } else {
-                val token = "keyboardcat"
+                val md = MessageDigest.getInstance("SHA-1")
+                val token = List(20) {
+                    (('a'..'z') + ('A'..'Z') + ('0'..'9')).random()
+                }.joinToString("")
                 authProvider.addSession(token, principal)
                 call.respond(LoginResponse(true, token))
             }
