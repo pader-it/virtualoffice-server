@@ -6,6 +6,7 @@ import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.sessions.*
 import io.ktor.util.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -21,14 +22,8 @@ fun Application.module() {
             setPrettyPrinting()
         }
     }
-    install(Authentication) {
-        form("auth-form") {
-            userParamName = "username"
-            passwordParamName = "password"
-            validate { credentials -> authProvider.authenticate(credentials.name, credentials.password) }
-        }
-    }
-    install(Routing){
-        userManagement()
+    //install(Authentication) {}
+    install(Routing) {
+        userManagement(authProvider)
     }
 }
