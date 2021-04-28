@@ -1,7 +1,22 @@
+buildscript {
+    ext.kotlin_version = '1.2.0'
+    ext.ktor_version = '1.4.0'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.32'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'java'
 }
+
+mainClassName = "io.ktor.server.netty.DevelopmentEngine"
 
 group = 'paderit'
 version = '1.0-SNAPSHOT'
@@ -14,13 +29,13 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
-    implementation 'io.ktor:ktor-server-netty:1.4.0'
-    implementation 'io.ktor:ktor-html-builder:1.4.0'
-    implementation "io.ktor:ktor-auth:1.4.0"
-    implementation "io.ktor:ktor-gson:1.4.0"
-    implementation 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-html-builder:$ktor_version"
+    implementation "io.ktor:ktor-auth:$ktor_version"
+    implementation "io.ktor:ktor-gson:$ktor_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2"
+    implementation "org.slf4j:slf4j-simple:1.7.30"
 }
 
 test {
@@ -37,4 +52,10 @@ compileTestKotlin {
 
 application {
     mainClassName = 'io.ktor.server.netty.EngineMain'
+}
+
+shadowJar {
+    archiveBaseName.set('virtualoffice-server')
+    archiveClassifier.set('')
+    archiveVersion.set('')
 }

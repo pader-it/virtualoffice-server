@@ -11,7 +11,7 @@ fun Route.defaultapi(authProvider: AuthProvider, officeManager: OfficeManager) {
     route("/userinfo") {
         get {
             val session = call.receive<SessionToken>()
-            val principal = if(session != null && authProvider.authenticate(session.token) != null){
+            val principal = if(authProvider.authenticate(session.token) != null){
                 authProvider.authenticate(session.token)
             } else
                 null
@@ -26,7 +26,7 @@ fun Route.defaultapi(authProvider: AuthProvider, officeManager: OfficeManager) {
     route("/office"){
         get{
             val session = call.receive<SessionToken>()
-            val principal = if(session != null && authProvider.authenticate(session.token) != null){
+            val principal = if(authProvider.authenticate(session.token) != null){
                 authProvider.authenticate(session.token)
             } else
                 null
