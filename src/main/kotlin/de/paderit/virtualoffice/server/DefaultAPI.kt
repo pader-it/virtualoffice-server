@@ -19,21 +19,11 @@ fun Route.defaultapi(officeManager: OfficeManager) {
                 call.respondText(call.authentication.principal.toString())
             }
         }
-    }
-    /*
-    route("/office"){
-        get{
-            val session = call.receive<SessionToken>()
-            val principal = if(authProvider.authenticate(session.token) != null){
-                authProvider.authenticate(session.token)
-            } else
-                null
-
-            if(principal != null){
+        route("/office"){
+            get{
                 call.respond(officeManager.officeList())
-            } else {
-                call.respondText("authentication failed")
             }
         }
-    }*/
+    }
+
 }
