@@ -17,6 +17,18 @@ fun Route.userManagement(userService: UserService, tokenService: JwtTokenService
             }
         }
     }
+    route("/register"){
+        post{
+            val regRequest = call.receive<RegistrationRequest>()
+            if(!userService.doesUserExist(regRequest.username)){
+                userService.registerUser(regRequest.username, regRequest.password)
+                call.response.status(HttpStatusCode.OK)
+            } else{
+                call.response.status(HttpStatusCode.Conflict)
+            }
+        }
+    }
 }
 
 data class LoginRequest(val username: String, val password: String)
+data class RegistrationRequest(val username: String, val password: String)
