@@ -28,6 +28,7 @@ fun Route.defaultapi(officeManager: OfficeManager) {
             route("/{officeId}/enter"){
                 post{
                     val officeId = call.parameters["officeId"]!!.toInt()
+                    call.application.environment.log.info("entering office $officeId")
                     if(officeManager.hasOffice(officeId)){
                         val user = retrieveUser(call)
                         if(officeManager.isUserFree(user)){

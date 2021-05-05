@@ -50,9 +50,9 @@ curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKE
 ```
 Enter Office:  
 ```
-curl -X GET -I -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office/${OfficeID}/enter
+curl -X POST -I -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office/${OfficeID}/enter
 ```
 Leave Office:  
 ```
-curl -X GET -I -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office/${OfficeID}/leave
+curl -X POST -I -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office/${OfficeID}/leave
 ```
