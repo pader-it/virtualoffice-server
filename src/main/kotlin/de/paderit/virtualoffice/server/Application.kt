@@ -1,5 +1,6 @@
 package de.paderit.virtualoffice.server
 
+import org.slf4j.event.Level
 import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -26,7 +27,9 @@ fun Application.module() {
     val tokenService = JwtTokenService(authAlgorithm, expiration, issuer)
     val officeManager = OfficeManager()
 
-    install(CallLogging)
+    install(CallLogging){
+        level = Level.INFO
+    }
     install(ContentNegotiation) {
         gson {
             setPrettyPrinting()
