@@ -28,19 +28,15 @@ java -jar ./build/libs/virtualoffice-server.jar
 
 ## Testing
 Simple tests can be done via console.  
-Hello World:  
-```
-curl -X GET http://localhost:8080/  
-```  
 Authentication:  
 ```
-curl -X POST --header "Content-Type: application/json" --data '{"username":"pader","password":"it"}' http://localhost:8080/login
+TOKEN=$(curl -X POST --header "Content-Type: application/json" --data '{"username":"pader","password":"it"}' http://localhost:8080/login)
 ```  
-Authentication token Test:  
+Hello World:  
 ```
-curl -X GET --header "Content-Type: application/json" --data '{"token":"keyboardcat"}' http://localhost:8080/userinfo
+curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/hello
 ```  
-List of available offices:  
+User Information:  
 ```
-curl -X GET --header "Content-Type: application/json" --data '{"token":"keyboardcat"}' http://localhost:8080/office
+curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/userinfo
 ```

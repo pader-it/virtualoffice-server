@@ -1,43 +1,22 @@
 package de.paderit.virtualoffice.server
 
 import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import io.ktor.util.*
-import java.security.MessageDigest
 
-@InternalAPI
-fun Route.userManagement(authProvider: AuthProvider){
-    route("/"){
-        get{
-            call.respondText("Hello World!")
-        }
-    }
+fun Route.userManagement(userService: UserService, tokenService: JwtTokenService){
     route("/login"){
         post{
             val loginRequest = call.receive<LoginRequest>()
-            val principal = authProvider.authenticate(loginRequest.username, loginRequest.password)
-            if(principal == null){
-                call.respond(LoginResponse(false, ""))
+            if(userService.authenticateUser(loginRequest.username, loginRequest.password)){
+                call.respond(tokenService.generateToken(loginRequest.username))
             } else {
-                val md = MessageDigest.getInstance("SHA-1")
-                val token = List(20) {
-                    (('a'..'z') + ('A'..'Z') + ('0'..'9')).random()
-                }.joinToString("")
-                authProvider.addSession(token, principal)
-                call.respond(LoginResponse(true, token))
+                call.response.status(HttpStatusCode.Unauthorized)
             }
         }
     }
 }
 
-data class LoginRequest(
-    val username: String,
-    val password: String
-)
-
-data class LoginResponse(
-    val ok: Boolean,
-    val token: String
-)
+data class LoginRequest(val username: String, val password: String)
