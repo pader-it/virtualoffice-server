@@ -15,7 +15,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
     environment.log.info("Starting Virtual Office server")
-    
+
     val myRealm = environment.config.property("jwt.realm").getString()
     val secret = environment.config.property("jwt.secret").getString()
     val expiration = environment.config.property("jwt.expiration_ms").getString().toLong()

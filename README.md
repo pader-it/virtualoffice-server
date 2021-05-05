@@ -48,3 +48,11 @@ Office list:
 ```
 curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office
 ```
+Enter Office:  
+```
+curl -X GET -I -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office/${OfficeID}/enter
+```
+Leave Office:  
+```
+curl -X GET -I -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" http://localhost:8080/office/${OfficeID}/leave
+```
