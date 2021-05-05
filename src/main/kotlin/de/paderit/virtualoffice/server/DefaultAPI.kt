@@ -2,6 +2,7 @@ package de.paderit.virtualoffice.server
 
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -16,7 +17,8 @@ fun Route.defaultapi(officeManager: OfficeManager) {
         }
         route("/userinfo") {
             get {
-                call.respondText(call.authentication.principal.toString())
+                val principal: JWTPrincipal = call.authentication.principal as JWTPrincipal
+                call.respondText(principal.payload.getClaim("login").asString())
             }
         }
         route("/office"){
