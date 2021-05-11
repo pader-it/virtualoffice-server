@@ -10,4 +10,12 @@ class Office(val id: Int){
     fun leaveOffice(emp: Employee){
         members.remove(emp)
     }
+
+    fun getMemberIdList(): MutableList<Int>{
+        val memberIdList = mutableListOf<Int>()
+        members.forEach {
+            memberIdList.add(it.id)
+        }
+        return memberIdList
+    }
 }

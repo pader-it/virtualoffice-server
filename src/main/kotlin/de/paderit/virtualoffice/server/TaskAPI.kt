@@ -6,9 +6,10 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import java.time.LocalDateTime
 
 fun Route.taskApi(taskManager: TaskManager, employeeRegistry: EmployeeRegistry){
-    authenticate {
+    authenticate("auth-jwt"){
         route("/tasks"){
             get{
                 call.respond(taskManager.getTaskList())
@@ -22,6 +23,17 @@ fun Route.taskApi(taskManager: TaskManager, employeeRegistry: EmployeeRegistry){
                 }
             }
             route("/{taskid}"){
+                get{
+                    val taskid = call.parameters["taskid"]!!.toInt()
+                    val task = taskManager.getTask(taskid)
+                    if(task != null){
+                        val taskResponse = TaskResponse(task.id, task.name, task.creator, task.creationTime,
+                            task.assigned, task.status.toString())
+                        call.respond(taskResponse)
+                    } else {
+                        call.response.status(HttpStatusCode.NotFound)
+                    }
+                }
                 route("/assign"){
                     post{
                         val taskid = call.parameters["taskid"]!!.toInt()
@@ -72,3 +84,9 @@ fun Route.taskApi(taskManager: TaskManager, employeeRegistry: EmployeeRegistry){
 }
 
 data class TaskCreationRequest(val name: String)
+data class TaskResponse(val id: Int,
+                        val name: String,
+                        val creator: Int,
+                        val creationTime: LocalDateTime,
+                        val assigned: MutableList<Int>,
+                        val status: String)

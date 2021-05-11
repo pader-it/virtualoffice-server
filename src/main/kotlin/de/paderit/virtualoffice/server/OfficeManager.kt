@@ -23,6 +23,14 @@ class OfficeManager {
             false
     }
 
+    fun getOffice(id: Int): Office?{
+        return if(offices.containsKey(id)){
+            offices[id]
+        } else {
+            null
+        }
+    }
+
     fun enterOffice(id: Int, emp: Employee): Boolean{
         return if(offices.containsKey(id) && emp.office == null){
             offices[id]?.enterOffice(emp)

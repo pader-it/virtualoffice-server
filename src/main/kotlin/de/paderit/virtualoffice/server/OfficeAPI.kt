@@ -12,38 +12,52 @@ fun Route.officeApi(employeeRegistry: EmployeeRegistry, officeManager: OfficeMan
             get{
                 call.respond(officeManager.officeList())
             }
-            route("/{officeId}/enter"){
-                post{
+            route("/{officeId}"){
+                get{
                     val officeId = call.parameters["officeId"]!!.toInt()
-                    if(officeManager.hasOffice(officeId)){
-                        val userid = retrieveUserID(call)
-                        val emp = employeeRegistry.getEmployee(userid)!!
-                        if(officeManager.enterOffice(officeId, emp)){
-                            call.response.status(HttpStatusCode.OK)
-                        } else {
-                            call.response.status(HttpStatusCode.BadRequest)
-                        }
+                    val office = officeManager.getOffice(officeId)
+                    if(office != null){
+                        call.respond(OfficeResponse(office.id, office.getMemberIdList()))
                     } else {
-                        call.response.status(HttpStatusCode.NotFound)
+                        call.response.status(HttpStatusCode.BadRequest)
+                    }
+                }
+                route("/enter"){
+                    post{
+                        val officeId = call.parameters["officeId"]!!.toInt()
+                        if(officeManager.hasOffice(officeId)){
+                            val userid = retrieveUserID(call)
+                            val emp = employeeRegistry.getEmployee(userid)!!
+                            if(officeManager.enterOffice(officeId, emp)){
+                                call.response.status(HttpStatusCode.OK)
+                            } else {
+                                call.response.status(HttpStatusCode.BadRequest)
+                            }
+                        } else {
+                            call.response.status(HttpStatusCode.NotFound)
+                        }
+                    }
+                }
+                route("/leave"){
+                    post{
+                        val officeId = call.parameters["officeId"]!!.toInt()
+                        if(officeManager.hasOffice(officeId)){
+                            val userid = retrieveUserID(call)
+                            val emp = employeeRegistry.getEmployee(userid)!!
+                            if(officeManager.leaveOffice(officeId, emp)){
+                                call.response.status(HttpStatusCode.OK)
+                            } else {
+                                call.response.status(HttpStatusCode.BadRequest)
+                            }
+                        } else {
+                            call.response.status(HttpStatusCode.NotFound)
+                        }
                     }
                 }
             }
-            route("/{officeId}/leave"){
-                post{
-                    val officeId = call.parameters["officeId"]!!.toInt()
-                    if(officeManager.hasOffice(officeId)){
-                        val userid = retrieveUserID(call)
-                        val emp = employeeRegistry.getEmployee(userid)!!
-                        if(officeManager.leaveOffice(officeId, emp)){
-                            call.response.status(HttpStatusCode.OK)
-                        } else {
-                            call.response.status(HttpStatusCode.BadRequest)
-                        }
-                    } else {
-                        call.response.status(HttpStatusCode.NotFound)
-                    }
-                }
-            }
+
         }
     }
 }
+
+data class OfficeResponse(val id: Int, val members: MutableList<Int>)

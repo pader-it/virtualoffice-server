@@ -5,12 +5,12 @@ import java.time.LocalDateTime
 class Task(val id: Int, val name: String, emp: Employee) {
     var creator: Int = emp.id
     var creationTime: LocalDateTime = LocalDateTime.now()
-    var assignees: MutableList<Int> = mutableListOf()
+    var assigned: MutableList<Int> = mutableListOf()
     var status: TaskStatus = TaskStatus.OPEN
 
     fun assign(emp: Employee): Boolean{
-        return if(!assignees.contains(emp.id)){
-            assignees.add(emp.id)
+        return if(!assigned.contains(emp.id)){
+            assigned.add(emp.id)
             status = TaskStatus.ASSIGNED
             true
         } else {
@@ -19,8 +19,8 @@ class Task(val id: Int, val name: String, emp: Employee) {
     }
 
     fun disassign(emp: Employee): Boolean{
-        return if(assignees.contains(emp.id)){
-            assignees.remove(emp)
+        return if(assigned.contains(emp.id)){
+            assigned.remove(emp.id)
             true
         } else {
             false
