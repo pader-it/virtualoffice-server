@@ -7,7 +7,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.Identity.encode
 
-fun Route.userManagement(userService: UserService, tokenService: JwtTokenService){
+fun Route.userApi(userService: UserService, tokenService: JwtTokenService){
     route("/login"){
         post{
             val loginRequest = call.receive<LoginRequest>()

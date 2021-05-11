@@ -27,6 +27,7 @@ fun Application.module() {
     val userService = UserService(employeeRegistry)
     val tokenService = JwtTokenService(authAlgorithm, expiration, issuer)
     val officeManager = OfficeManager()
+    val taskManager = TaskManager()
 
     install(CallLogging){
         level = Level.INFO
@@ -45,8 +46,9 @@ fun Application.module() {
     }
     install(Routing) {
         generalApi(employeeRegistry)
-        userManagement(userService, tokenService)
+        userApi(userService, tokenService)
         officeApi(employeeRegistry, officeManager)
+        taskApi(taskManager, employeeRegistry)
     }
 }
 
