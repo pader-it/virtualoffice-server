@@ -7,9 +7,10 @@ import java.util.*
 
 class JwtTokenService(private val algorithm: Algorithm, private val expirationPeriod: Long, private val issuer: String) {
 
-    fun generateToken(username: String): String = JWT.create()
+    fun generateToken(id: Int, username: String): String = JWT.create()
         .withSubject("Authentication")
         .withIssuer(issuer)
+        .withClaim("id", id)
         .withClaim("login", username)
         .withExpiresAt(obtainExpirationDate())
         .sign(algorithm)

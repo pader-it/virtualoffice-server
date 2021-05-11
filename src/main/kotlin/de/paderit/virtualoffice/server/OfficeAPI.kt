@@ -2,25 +2,12 @@ package de.paderit.virtualoffice.server
 
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.auth.jwt.*
 import io.ktor.http.*
-import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import io.ktor.util.*
 
-fun Route.defaultapi(officeManager: OfficeManager) {
+fun Route.officeApi(employeeRegistry: EmployeeRegistry, officeManager: OfficeManager) {
     authenticate("auth-jwt"){
-        route("/hello"){
-            get {
-                call.respondText("Hello World!")
-            }
-        }
-        route("/userinfo") {
-            get {
-                call.respondText(retrieveUser(call))
-            }
-        }
         route("/office"){
             get{
                 call.respond(officeManager.officeList())
@@ -28,11 +15,10 @@ fun Route.defaultapi(officeManager: OfficeManager) {
             route("/{officeId}/enter"){
                 post{
                     val officeId = call.parameters["officeId"]!!.toInt()
-                    call.application.environment.log.info("entering office $officeId")
                     if(officeManager.hasOffice(officeId)){
-                        val user = retrieveUser(call)
-                        if(officeManager.isUserFree(user)){
-                            officeManager.enterOffice(officeId, user)
+                        val userid = retrieveUserID(call)
+                        val emp = employeeRegistry.getEmployee(userid)!!
+                        if(officeManager.enterOffice(officeId, emp)){
                             call.response.status(HttpStatusCode.OK)
                         } else {
                             call.response.status(HttpStatusCode.BadRequest)
@@ -46,9 +32,9 @@ fun Route.defaultapi(officeManager: OfficeManager) {
                 post{
                     val officeId = call.parameters["officeId"]!!.toInt()
                     if(officeManager.hasOffice(officeId)){
-                        val user = retrieveUser(call)
-                        if(officeManager.whereIsUser(user) == officeId){
-                            officeManager.leaveOffice(officeId, user)
+                        val userid = retrieveUserID(call)
+                        val emp = employeeRegistry.getEmployee(userid)!!
+                        if(officeManager.leaveOffice(officeId, emp)){
                             call.response.status(HttpStatusCode.OK)
                         } else {
                             call.response.status(HttpStatusCode.BadRequest)
@@ -60,9 +46,4 @@ fun Route.defaultapi(officeManager: OfficeManager) {
             }
         }
     }
-}
-
-fun retrieveUser(call: ApplicationCall): String{
-    val principal = call.authentication.principal as JWTPrincipal
-    return principal.payload.getClaim("login").asString()
 }

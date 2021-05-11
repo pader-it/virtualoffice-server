@@ -1,13 +1,13 @@
 package de.paderit.virtualoffice.server
 
-class Office(id: Int){
-    private var members: MutableList<String> = mutableListOf()
+class Office(val id: Int){
+    private var members: MutableList<Employee> = mutableListOf()
 
-    fun enterOffice(name: String){
-        members.add(name)
+    fun enterOffice(emp: Employee){
+        members.add(emp)
     }
 
-    fun leaveOffice(name: String){
-        members.remove(name)
+    fun leaveOffice(emp: Employee){
+        members.remove(emp)
     }
 }

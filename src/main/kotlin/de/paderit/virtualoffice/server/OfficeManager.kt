@@ -1,54 +1,62 @@
 package de.paderit.virtualoffice.server
 
 class OfficeManager {
-    private var officeMap: MutableMap<Int, Office> = mutableMapOf()
-    private var userToOfficeMap: MutableMap<String, Int> = mutableMapOf()
+    private var offices: MutableMap<Int, Office> = mutableMapOf()
+    private var idTracker = 1
 
     init{
-        createOffice(10)
-        createOffice(303)
+        loadOffices()
     }
 
-    fun createOffice(id: Int){
-        if(!officeMap.containsKey(id)){
-            officeMap[id] = Office(id)
-        }
+    fun createOffice(): Int {
+        val newOffice = Office(idTracker)
+        offices[idTracker] = newOffice
+        idTracker++
+        return newOffice.id
     }
 
-    fun enterOffice(id: Int, name: String): Boolean{
-        return if(officeMap.containsKey(id)){
-            officeMap[id]?.enterOffice(name)
-            userToOfficeMap.put(name, id)
+    fun deleteOffice(id: Int): Boolean{
+        return if(offices.containsKey(id)){
+            offices.remove(id)
+            true
+        } else
+            false
+    }
+
+    fun enterOffice(id: Int, emp: Employee): Boolean{
+        return if(offices.containsKey(id) && emp.office == null){
+            offices[id]?.enterOffice(emp)
+            emp.office = offices[id]
             true
         } else{
             false
         }
     }
 
-    fun leaveOffice(id: Int, name: String): Boolean{
-        return if(officeMap.containsKey(id)){
-            officeMap[id]?.leaveOffice(name)
+    fun leaveOffice(id: Int, emp: Employee): Boolean{
+        return if(offices.containsKey(id) && offices[id] == emp.office){
+            offices[id]?.leaveOffice(emp)
+            emp.office = null
             true
         } else{
             false
         }
     }
+
+    fun hasOffice(id: Int) = offices.containsKey(id)
 
     fun officeList(): MutableList<Int>{
         var list = mutableListOf<Int>()
-        officeMap.forEach{ (key, _) -> list.add(key) }
+        offices.forEach{ (key, _) -> list.add(key) }
         return list
     }
 
-    fun hasOffice(id: Int) = officeMap.containsKey(id)
+    private fun loadOffices(){
+        createOffice()
+        createOffice()
+    }
 
-    fun isUserFree(name: String) = !userToOfficeMap.containsKey(name)
+    private fun saveOffice(office: Office){
 
-    fun whereIsUser(name: String): Int? {
-        return if(!isUserFree(name)){
-            userToOfficeMap[name]
-        } else {
-            null
-        }
     }
 }

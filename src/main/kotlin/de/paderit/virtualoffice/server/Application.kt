@@ -23,7 +23,8 @@ fun Application.module() {
     val issuer = environment.config.property("jwt.domain").getString()
     val authAlgorithm = Algorithm.HMAC512(secret)
 
-    val userService = UserService()
+    val employeeRegistry = EmployeeRegistry()
+    val userService = UserService(employeeRegistry)
     val tokenService = JwtTokenService(authAlgorithm, expiration, issuer)
     val officeManager = OfficeManager()
 
@@ -43,8 +44,9 @@ fun Application.module() {
         }
     }
     install(Routing) {
+        generalApi(employeeRegistry)
         userManagement(userService, tokenService)
-        defaultapi(officeManager)
+        officeApi(employeeRegistry, officeManager)
     }
 }
 
@@ -55,3 +57,4 @@ fun validateUser(jwtCredential: JWTCredential, userService: UserService): Princi
         null
     }
 }
+
