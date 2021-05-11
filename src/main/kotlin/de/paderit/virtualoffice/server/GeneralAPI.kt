@@ -8,12 +8,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 
 fun Route.generalApi(employeeRegistry: EmployeeRegistry){
-    authenticate("auth-jwt") {
-        route("/hello") {
-            get {
-                call.respondText("Hello World!")
-            }
+    route("/hello") {
+        get {
+            call.respondText("Hello World!")
         }
+    }
+    authenticate("auth-jwt") {
         route("/userinfo") {
             get {
                 val emp = employeeRegistry.getEmployee(retrieveUserID(call))
